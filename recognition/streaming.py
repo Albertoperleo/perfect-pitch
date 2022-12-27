@@ -1,30 +1,32 @@
+from recognition.pitch import *
 import pyaudio
-import wave
+import numpy as np
+
+SAMPLING_RATE = 44100
+SAMPLES = 100
 
 def record():
-    # Inicializar PyAudio
+    # Initialize pyaudio
     p = pyaudio.PyAudio()
 
-    # Abrir stream de audio
+    # Open stream
     stream = p.open(format=pyaudio.paInt16,
                     channels=1,
-                    rate=44100,
+                    rate=SAMPLING_RATE,
                     input=True,
                     frames_per_buffer=1024)
 
-    # Bucle infinito para leer el stream de audio
     while True:
-        # Leer datos del stream
-        data = stream.read(1024)
+        # Read stream
+        audio_data = stream.read(1024)
+        audio_data = np.frombuffer(audio_data, dtype=np.int16)
         
-        print(data)
+        # Show audio
+        show_audio(audio_data, [], SAMPLES)
 
-        # Procesar datos del stream
-        # ...
-
-    # Cerrar stream de audio
+    # Close stream
     stream.stop_stream()
     stream.close()
 
-    # Finalizar PyAudio
+    # Finalize pyaudio
     p.terminate()
